@@ -1,0 +1,10 @@
+name: "Birth Github Setup"
+description: "Action to setup Birth projects on Github"
+author: "Birth Software"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Birth Github Setup
+      run: ./setup.sh
+      shell: bash
