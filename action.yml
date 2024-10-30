@@ -6,5 +6,38 @@ runs:
   using: "composite"
   steps:
     - name: Birth Github Setup
-      run: ./setup.sh
       shell: bash
+      run: |
+        BIRTH_NATIVE_OS_STRING=$OSTYPE
+
+        case "$BIRTH_NATIVE_OS_STRING" in
+            darwin*) BIRTH_OS="macos";;
+            linux*) BIRTH_OS="linux";;
+            msys*) BIRTH_OS="windows";;
+            *) exit 1
+        esac
+        
+        BIRTH_NATIVE_ARCH_STRING="$(uname -m)"
+        
+        case "$BIRTH_NATIVE_ARCH_STRING" in
+            x86_64) BIRTH_ARCH="x86_64";;
+            arm64) BIRTH_ARCH="aarch64";;
+            *) exit 1
+        esac
+        
+        echo "BIRTH_NATIVE_OS_STRING=$BIRTH_NATIVE_OS_STRING" >> $GITHUB_ENV
+        echo "BIRTH_NATIVE_ARCH_STRING=$BIRTH_NATIVE_ARCH_STRING" >> $GITHUB_ENV
+        echo "BIRTH_OS=$BIRTH_OS" >> $GITHUB_ENV
+        echo "BIRTH_ARCH=$BIRTH_ARCH" >> $GITHUB_ENV
+
+        case $BIRTH_OS in
+          linux)
+            sudo apt install ninja-build clang
+            ;;
+          macos)
+            brew install ninja coreutils
+            ;;
+          windows)
+            choco install ninja gnuwin32-coreutils.install
+            ;;
+        esac
