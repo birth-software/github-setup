@@ -36,7 +36,7 @@ runs:
             uname -a
             lsb_release -a
             df -h
-            sudo apt install ninja-build clang
+            sudo apt install ninja-build clang mold
             ;;
           macos)
             uname -a
