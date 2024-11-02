@@ -8,6 +8,7 @@ runs:
     - name: Birth Github Setup
       shell: bash
       run: |
+        set -eux
         BIRTH_NATIVE_OS_STRING=$OSTYPE
 
         case "$BIRTH_NATIVE_OS_STRING" in
@@ -32,12 +33,21 @@ runs:
 
         case $BIRTH_OS in
           linux)
+            uname -a
+            lsb_release -a
+            df -h
             sudo apt install ninja-build clang
             ;;
           macos)
+            uname -a
+            sw_vers -productVersion
+            df -h
             brew install ninja coreutils
             ;;
           windows)
+            systeminfo
+            wmic logicaldisk get name, size, freespace
+
             choco install ninja gnuwin32-coreutils.install
             ;;
         esac
