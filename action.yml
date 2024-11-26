@@ -42,7 +42,7 @@ runs:
             uname -a
             sw_vers -productVersion
             df -h
-            brew install ninja coreutils
+            brew install ninja coreutils llvm
             ;;
           windows)
             systeminfo
