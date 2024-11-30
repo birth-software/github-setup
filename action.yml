@@ -23,6 +23,7 @@ runs:
         case "$BIRTH_NATIVE_ARCH_STRING" in
             x86_64) BIRTH_ARCH="x86_64";;
             arm64) BIRTH_ARCH="aarch64";;
+            aarch64) BIRTH_ARCH="aarch64";;
             *) exit 1
         esac
         
@@ -36,7 +37,7 @@ runs:
             uname -a
             lsb_release -a
             df -h
-            sudo apt install ninja-build clang mold
+            sudo apt-get install -y ninja-build clang mold
             ;;
           macos)
             uname -a
