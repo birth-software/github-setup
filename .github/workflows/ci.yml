@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       BIRTH_GITHUB_TARGETS: ${{ steps.generate-config.outputs.BIRTH_GITHUB_TARGETS }}
+      BIRTH_ORACLE_LINUX_IMAGE: ${{ steps.generate-config.outputs.BIRTH_ORACLE_LINUX_IMAGE }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -25,6 +26,8 @@ jobs:
       matrix:
         os: ${{ fromJSON(needs.generate-config.outputs.BIRTH_GITHUB_TARGETS) }}
     runs-on: ${{ matrix.os }}
+    env:
+      BIRTH_ORACLE_LINUX_IMAGE: ${{ needs.generate-config.outputs.BIRTH_ORACLE_LINUX_IMAGE }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -33,7 +36,7 @@ jobs:
       - name: Check
         shell: bash
         run: |
-          set -ex
+          set -eux
           echo $BIRTH_NATIVE_OS_STRING
           echo $BIRTH_NATIVE_ARCH_STRING
           echo $BIRTH_ARCH

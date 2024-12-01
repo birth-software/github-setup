@@ -32,12 +32,15 @@ runs:
         echo "BIRTH_OS=$BIRTH_OS" >> $GITHUB_ENV
         echo "BIRTH_ARCH=$BIRTH_ARCH" >> $GITHUB_ENV
 
+        MATRIX_OS=${{ inputs.os }}
         case $BIRTH_OS in
           linux)
             uname -a
             lsb_release -a
             df -h
-            sudo apt-get install -y ninja-build clang mold
+            if [[ "$BIRTH_ARCH" != "aarch64" ]]; then
+              sudo apt-get install -y ninja-build clang mold
+            fi
             ;;
           macos)
             uname -a
