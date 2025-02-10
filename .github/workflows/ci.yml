@@ -13,21 +13,18 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       BIRTH_GITHUB_TARGETS: ${{ steps.generate-config.outputs.BIRTH_GITHUB_TARGETS }}
-      BIRTH_ORACLE_LINUX_IMAGE: ${{ steps.generate-config.outputs.BIRTH_ORACLE_LINUX_IMAGE }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
       - name: Generate config
         id: GENERATE-CONFIG
-        uses: birth-software/github-config@v4
+        uses: birth-software/github-config@v5
   test:
     needs: generate-config
     strategy:
       matrix:
         os: ${{ fromJSON(needs.generate-config.outputs.BIRTH_GITHUB_TARGETS) }}
     runs-on: ${{ matrix.os }}
-    env:
-      BIRTH_ORACLE_LINUX_IMAGE: ${{ needs.generate-config.outputs.BIRTH_ORACLE_LINUX_IMAGE }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v4

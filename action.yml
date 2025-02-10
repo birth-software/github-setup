@@ -15,8 +15,17 @@ runs:
             darwin*) BIRTH_OS="macos";;
             linux*) BIRTH_OS="linux";;
             msys*) BIRTH_OS="windows";;
-            *) exit 1
+            *) exit 1;;
         esac
+
+        if [[ -n "${BIRTH_LINKAGE_MODE+x}" ]]; then
+            echo "BIRTH_LINKAGE_MODE=$BIRTH_LINKAGE_MODE" >> $GITHUB_ENV
+            case "$BIRTH_LINKAGE_MODE" in
+                static) echo "LLVM_LINK_LLVM_DYLIB=OFF" >> $GITHUB_ENV;;
+                dynamic) echo "LLVM_LINK_LLVM_DYLIB=ON" >> $GITHUB_ENV;;
+                *) exit 1;;
+            esac
+        fi
         
         BIRTH_NATIVE_ARCH_STRING="$(uname -m)"
         
@@ -24,7 +33,7 @@ runs:
             x86_64) BIRTH_ARCH="x86_64";;
             arm64) BIRTH_ARCH="aarch64";;
             aarch64) BIRTH_ARCH="aarch64";;
-            *) exit 1
+            *) exit 1;;
         esac
         
         echo "BIRTH_NATIVE_OS_STRING=$BIRTH_NATIVE_OS_STRING" >> $GITHUB_ENV
@@ -37,10 +46,9 @@ runs:
           linux)
             uname -a
             lsb_release -a
+            lscpu
             df -h
-            if [[ "$BIRTH_ARCH" != "aarch64" ]]; then
-              sudo apt-get install -y ninja-build clang mold
-            fi
+            sudo apt-get update && sudo apt-get install -y ninja-build clang mold llvm
             ;;
           macos)
             uname -a
@@ -50,7 +58,6 @@ runs:
             ;;
           windows)
             systeminfo
-            wmic logicaldisk get name, size, freespace
 
             choco install ninja gnuwin32-coreutils.install
             ;;
