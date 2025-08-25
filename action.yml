@@ -9,35 +9,12 @@ runs:
       shell: bash
       run: |
         set -eux
-        BIRTH_NATIVE_OS_STRING=$OSTYPE
+        clang -print-effective-triple
+        clang -print-target-triple
+        clang -std=gnu2x -g -o $GITHUB_ACTION_PATH/main $GITHUB_ACTION_PATH/main.c
+        $GITHUB_ACTION_PATH/main $GITHUB_ACTION_PATH/helper.sh
+        source $GITHUB_ACTION_PATH/helper.sh
 
-        case "$BIRTH_NATIVE_OS_STRING" in
-            darwin*) BIRTH_OS="macos";;
-            linux*) BIRTH_OS="linux";;
-            msys*) BIRTH_OS="windows";;
-            *) exit 1;;
-        esac
-
-        if [[ -n "${BIRTH_LINKAGE_MODE+x}" ]]; then
-            echo "BIRTH_LINKAGE_MODE=$BIRTH_LINKAGE_MODE" >> $GITHUB_ENV
-            case "$BIRTH_LINKAGE_MODE" in
-                static) echo "LLVM_LINK_LLVM_DYLIB=OFF" >> $GITHUB_ENV;;
-                dynamic) echo "LLVM_LINK_LLVM_DYLIB=ON" >> $GITHUB_ENV;;
-                *) exit 1;;
-            esac
-        fi
-        
-        BIRTH_NATIVE_ARCH_STRING="$(uname -m)"
-        
-        case "$BIRTH_NATIVE_ARCH_STRING" in
-            x86_64) BIRTH_ARCH="x86_64";;
-            arm64) BIRTH_ARCH="aarch64";;
-            aarch64) BIRTH_ARCH="aarch64";;
-            *) exit 1;;
-        esac
-        
-        echo "BIRTH_NATIVE_OS_STRING=$BIRTH_NATIVE_OS_STRING" >> $GITHUB_ENV
-        echo "BIRTH_NATIVE_ARCH_STRING=$BIRTH_NATIVE_ARCH_STRING" >> $GITHUB_ENV
         echo "BIRTH_OS=$BIRTH_OS" >> $GITHUB_ENV
         echo "BIRTH_ARCH=$BIRTH_ARCH" >> $GITHUB_ENV
 
@@ -45,10 +22,10 @@ runs:
         case $BIRTH_OS in
           linux)
             uname -a
+            sudo apt-get update && sudo apt-get install -y ninja-build mold
             lsb_release -a
             lscpu
             df -h
-            sudo apt-get update && sudo apt-get install -y ninja-build clang mold llvm
             ;;
           macos)
             uname -a
@@ -58,7 +35,6 @@ runs:
             ;;
           windows)
             systeminfo
-
             choco install ninja gnuwin32-coreutils.install
             ;;
         esac

@@ -19,6 +19,8 @@ jobs:
       - name: Generate config
         id: GENERATE-CONFIG
         uses: birth-software/github-config@v8
+        with:
+          include_windows_aarch64: true
   test:
     needs: generate-config
     strategy:
@@ -34,8 +36,6 @@ jobs:
         shell: bash
         run: |
           set -eux
-          echo $BIRTH_NATIVE_OS_STRING
-          echo $BIRTH_NATIVE_ARCH_STRING
           echo $BIRTH_ARCH
           echo $BIRTH_OS
 
