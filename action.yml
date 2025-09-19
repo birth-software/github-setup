@@ -31,7 +31,9 @@ runs:
             uname -a
             sw_vers -productVersion
             df -h
-            brew install ninja coreutils llvm
+            brew install ninja coreutils llvm lld
+            BIRTH_LLD_PREFIX=$(brew --prefix lld)
+            echo "BIRTH_LLD_PREFIX=$BIRTH_LLD_PREFIX" >> $GITHUB_ENV
             ;;
           windows)
             systeminfo

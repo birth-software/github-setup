@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Generate config
         id: GENERATE-CONFIG
-        uses: birth-software/github-config@v8
+        uses: birth-software/github-config@v9
         with:
           include_windows_aarch64: true
   test:
